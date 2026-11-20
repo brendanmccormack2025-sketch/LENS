@@ -16,7 +16,7 @@ Everything used here ships inside **Expo Go**, so you can test on your phone tod
 
 ```bash
 npm install
-cp .env.example .env          # fill in from Supabase → Project Settings → API
+cp .env.example .env          # already filled in with the project URL + publishable key
 npx expo start --tunnel       # scan the QR with your iPhone camera
 ```
 
