@@ -30,7 +30,15 @@ Share a text, link or screenshot from any app → LENS card slides up with the v
 - Known limitation: the share card keeps its own anonymous login, separate from the app's, so its free-scan count is separate too.
   We'll fix this when real accounts arrive by sharing the login through the app group or keychain.
 
-## Backend setup (one time)
+## Backend setup with no terminal (Supabase dashboard only)
+
+1. **Authentication → Sign In / Providers:** turn on Anonymous sign-ins.
+2. **SQL Editor → New query:** paste `supabase/migrations/20261119000000_scan_usage.sql` and click Run.
+3. **Edge Functions → Secrets:** add `ANTHROPIC_API_KEY`. Optionally add `WEB_RISK_API_KEY`, `FREE_DAILY_SCANS` and `PREMIUM_DAILY_SCANS`.
+4. **Edge Functions → Deploy a new function → Via editor:** name it `analyze`, paste `supabase/dashboard/analyze.single.ts`, then deploy.
+5. **Project Settings → API:** copy the URL and anon key into `.env`.
+
+## Backend setup (one time, CLI)
 
 1. Create a Supabase project. In **Authentication → Sign In / Providers**, turn on **Anonymous sign-ins**.
    Also turn on CAPTCHA (Turnstile) for auth before public launch — otherwise someone can script
