@@ -6,7 +6,7 @@ export class LimitReachedError extends Error {}
 
 export async function analyze(req: AnalyzeRequest): Promise<AnalyzeResponse> {
   await ensureSession();
-  const { data, error } = await supabase.functions.invoke<AnalyzeResponse>('analyze', { body: req });
+  const { data, error } = await supabase.functions.invoke<AnalyzeResponse>('Analyze', { body: req });
   if (error) {
     if (error instanceof FunctionsHttpError) {
       const res = error.context as Response;

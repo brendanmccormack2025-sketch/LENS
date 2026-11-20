@@ -5,7 +5,7 @@ Screenshot / photo / link / message / QR → plain-English verdict, warning sign
 ```
 src/app/            Expo Router screens: index (home), link, qr, result
 src/lib/            Supabase client (anonymous auth), analyze() call, image picking
-supabase/functions/analyze/      The one backend endpoint
+supabase/functions/Analyze/      The one backend endpoint
 supabase/functions/_shared/      url-checks.ts (deterministic link checks + tests), prompt.ts (the AI prompt)
 supabase/migrations/             Daily scan quota + premium entitlement tables
 ```
@@ -35,7 +35,7 @@ Share a text, link or screenshot from any app → LENS card slides up with the v
 1. **Authentication → Sign In / Providers:** turn on Anonymous sign-ins.
 2. **SQL Editor → New query:** paste `supabase/migrations/20261119000000_scan_usage.sql` and click Run.
 3. **Edge Functions → Secrets:** add `ANTHROPIC_API_KEY`. Optionally add `WEB_RISK_API_KEY`, `FREE_DAILY_SCANS` and `PREMIUM_DAILY_SCANS`.
-4. **Edge Functions → Deploy a new function → Via editor:** name it `analyze`, paste `supabase/dashboard/analyze.single.ts`, then deploy.
+4. **Edge Functions → Deploy a new function → Via editor:** name it `Analyze` (capital A: the app calls this exact name), paste `supabase/dashboard/analyze.single.ts`, then deploy.
 5. **Project Settings → API:** copy the URL and anon key into `.env`.
 
 ## Backend setup (one time, CLI)
@@ -53,7 +53,7 @@ Share a text, link or screenshot from any app → LENS card slides up with the v
    ```bash
    cp supabase/functions/.env.example supabase/functions/.env   # add your Anthropic key
    npx supabase secrets set --env-file supabase/functions/.env
-   npx supabase functions deploy analyze
+   npx supabase functions deploy Analyze
    ```
 4. Optional: Google Cloud → enable **Web Risk API** → create an API key → `WEB_RISK_API_KEY`.
    (Don't use the free Safe Browsing API — its terms are non-commercial only.)

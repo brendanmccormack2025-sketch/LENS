@@ -1,5 +1,5 @@
-// SINGLE-FILE VERSION for pasting into the Supabase dashboard (Edge Functions → Deploy a new function → name it "analyze").
-// Generated from supabase/functions/analyze + _shared. Edit those, not this.
+// SINGLE-FILE VERSION for pasting into the Supabase dashboard (Edge Functions → Deploy a new function → name it "Analyze").
+// Generated from supabase/functions/Analyze + _shared. Edit those, not this.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // ---- url-checks ----
