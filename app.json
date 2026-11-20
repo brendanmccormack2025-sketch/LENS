@@ -36,6 +36,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      [
+        "./plugins/withDeploymentTarget",
+        {
+          "target": "16.4"
+        }
+      ],
       "expo-router",
       [
         "expo-camera",
