@@ -11,6 +11,16 @@
       "bundleIdentifier": "com.yourname.lens",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          }
+        ]
       }
     },
     "android": {
@@ -38,6 +48,41 @@
         "expo-image-picker",
         {
           "photosPermission": "LENS needs access to the screenshot or photo you choose so it can explain it."
+        }
+      ],
+      [
+        "expo-share-extension",
+        {
+          "activationRules": [
+            {
+              "type": "text"
+            },
+            {
+              "type": "url",
+              "max": 1
+            },
+            {
+              "type": "image",
+              "max": 1
+            }
+          ],
+          "backgroundColor": {
+            "red": 10,
+            "green": 11,
+            "blue": 10,
+            "alpha": 1
+          },
+          "height": 720,
+          "excludedPackages": [
+            "expo-dev-client",
+            "expo-splash-screen",
+            "expo-updates",
+            "expo-router",
+            "expo-camera",
+            "expo-image-picker",
+            "expo-clipboard",
+            "expo-linking"
+          ]
         }
       ]
     ],

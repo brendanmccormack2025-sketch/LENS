@@ -17,7 +17,7 @@ const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE
 
 type Req =
   | { kind: 'image'; imageBase64: string; mediaType: 'image/jpeg' | 'image/png' }
-  | { kind: 'url'; url: string; source: 'qr' | 'paste' }
+  | { kind: 'url'; url: string; source: 'qr' | 'paste' | 'share' }
   | { kind: 'text'; text: string };
 
 const json = (body: unknown, status = 200) =>
@@ -87,7 +87,8 @@ async function callClaude(req: Req, linkChecks: LinkCheck[]) {
     content.push({ type: 'image', source: { type: 'base64', media_type: req.mediaType, data: req.imageBase64 } });
     content.push({ type: 'text', text: 'The user shared this image and wants to understand it. Analyze it.' });
   } else {
-    const label = req.kind === 'url' ? `A web address the user got from a ${req.source === 'qr' ? 'QR code' : 'paste'}` : 'A message the user received';
+    const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to LENS)' };
+    const label = req.kind === 'url' ? `A web address the user got from ${from[req.source] ?? 'somewhere'}` : 'A message the user received';
     content.push({
       type: 'text',
       text: `${label}:\n<user_content>\n${req.kind === 'url' ? req.url : req.text}\n</user_content>`,

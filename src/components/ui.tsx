@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
+import { AppText as Text } from './AppText';
 import * as Haptics from 'expo-haptics';
 import { colors, radius, type } from '../theme';
 import type { Verdict } from '../lib/types';

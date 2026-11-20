@@ -20,6 +20,16 @@ cp .env.example .env          # fill in from Supabase → Project Settings → A
 npx expo start --tunnel       # scan the QR with your iPhone camera
 ```
 
+## Share → LENS (the share card)
+
+Share a text, link or screenshot from any app → LENS card slides up with the verdict → Done → back where you were.
+
+- Code: `index.share.js` → `src/share/ShareExtension.tsx`. It reuses `ResultView`, `analyze()` and `prepareImage()` from the app.
+- Not available in Expo Go. Test it with an EAS **preview** build, which bundles the JS inside the app.
+  (Debug builds try to load the share card's JS from your dev server, which won't work through a Codespace tunnel.)
+- Known limitation: the share card keeps its own anonymous login, separate from the app's, so its free-scan count is separate too.
+  We'll fix this when real accounts arrive by sharing the login through the app group or keychain.
+
 ## Backend setup (one time)
 
 1. Create a Supabase project. In **Authentication → Sign In / Providers**, turn on **Anonymous sign-ins**.
@@ -62,6 +72,6 @@ npm run typecheck
 
 1. Build an evaluation set: 50+ real scam screenshots (r/Scams, FTC examples, your own texts) and 50 legit ones.
    Run them through the function after every prompt change and track false "looks OK" on scams — that's the number that matters.
-2. Share Extension ("Share → LENS" from Messages/Mail/Safari) — far less friction than screenshot → open app → pick.
+2. ✅ Share Extension: done. Next comes the Siri / Action Button shortcut ("Check what I copied").
 3. LENS Watch v1: SMS filter extension (needs a dev build via EAS + an Expo config plugin for the extension target).
 4. RevenueCat for the annual subscription → writes `entitlements.premium_until`.
