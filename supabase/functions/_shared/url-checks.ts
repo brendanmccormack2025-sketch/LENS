@@ -25,9 +25,9 @@ const RISKY_TLDS = new Set([
 ]);
 
 // Brands scammers impersonate most, mapped to domains they actually use.
-const BRANDS: Record<string, string[]> = {
+export const BRANDS: Record<string, string[]> = {
   usps: ['usps.com'], ups: ['ups.com'], fedex: ['fedex.com'], dhl: ['dhl.com'],
-  amazon: ['amazon.com', 'amazon.co.uk', 'amazon.ca'], apple: ['apple.com'], icloud: ['icloud.com', 'apple.com'],
+  amazon: ['amazon.com', 'amazon.co.uk', 'amazon.ca', 'amzn.to', 'a.co', 'amzn.com'], apple: ['apple.com', 'apple.co'], icloud: ['icloud.com', 'apple.com'],
   paypal: ['paypal.com'], venmo: ['venmo.com'], zelle: ['zellepay.com'], cashapp: ['cash.app'],
   netflix: ['netflix.com'], microsoft: ['microsoft.com', 'live.com', 'office.com'],
   chase: ['chase.com'], wellsfargo: ['wellsfargo.com'], bankofamerica: ['bankofamerica.com'],

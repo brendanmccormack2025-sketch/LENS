@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionRow, PrimaryButton } from '../components/ui';
 import { setPending } from '../lib/analyze';
@@ -48,13 +48,8 @@ export default function Home() {
           <ActionRow
             icon="🛡"
             label="LENS Watch"
-            hint="Automatic text-message filtering — coming soon"
-            onPress={() =>
-              Alert.alert(
-                'Coming soon',
-                'LENS Watch will sort scam texts from unknown senders into your Junk folder automatically. We’ll let you know when it’s ready.'
-              )
-            }
+            hint="Automatic scam-text filtering and Safari warnings"
+            onPress={() => router.push('/watch')}
           />
         </View>
 
