@@ -9,6 +9,8 @@ export interface LinkCheck {
   redirects: number;
   flags: string[];
   knownThreat: string[] | null;
+  /** True only if a reputation database (Google Web Risk) was actually consulted. */
+  reputationChecked: boolean;
 }
 
 const SHORTENERS = new Set([
@@ -33,6 +35,8 @@ const BRANDS: Record<string, string[]> = {
   google: ['google.com', 'googleusercontent.com', 'googleapis.com'], facebook: ['facebook.com'], instagram: ['instagram.com'], meta: ['meta.com'],
 };
 
+const OFFICIAL = new Set(Object.values(BRANDS).flat());
+
 const TWO_PART_SUFFIXES = new Set(['co.uk', 'com.au', 'co.nz', 'co.jp', 'com.br', 'co.in', 'org.uk']);
 
 export function registrableDomain(host: string): string {
@@ -52,6 +56,16 @@ export function normalizeUrl(input: string): URL | null {
   } catch {
     return null;
   }
+}
+
+/** Catches unknown shorteners: a tiny domain + one random-looking path token (e.g. n0w.us/-9NBVC). */
+export function looksShortened(u: URL): boolean {
+  const name = registrableDomain(u.hostname).split('.')[0];
+  const segs = u.pathname.split('/').filter(Boolean);
+  if (OFFICIAL.has(registrableDomain(u.hostname))) return false; // ups.com/Track etc.
+  const t = segs[0] ?? '';
+  const randomLooking = /\d/.test(t) || (/[A-Z]/.test(t.slice(1)) && /[a-z]/.test(t)) || /^[-_]/.test(t);
+  return name.length <= 4 && segs.length === 1 && /^[A-Za-z0-9_-]{4,12}$/.test(t) && randomLooking && !u.search;
 }
 
 const isIp = (h: string) => /^\d{1,3}(\.\d{1,3}){3}$/.test(h) || h.startsWith('[');
@@ -77,7 +91,7 @@ export function staticFlags(u: URL): string[] {
   if (u.protocol === 'http:') flags.push('Not encrypted (http, not https)');
   if (isIp(host)) flags.push('Uses a raw IP address instead of a website name');
   if (host.includes('xn--')) flags.push('Uses look-alike international characters in the address');
-  if (SHORTENERS.has(host)) flags.push('Shortened link hides the real destination');
+  if (SHORTENERS.has(host) || looksShortened(u)) flags.push('Shortened link hides the real destination');
   if (RISKY_TLDS.has(tld)) flags.push(`Ends in “.${tld}”, an ending often used by scam sites`);
   if (u.username || u.href.includes('@')) flags.push('Contains “@”, which can disguise the real destination');
   if (host.split('.').length > 4) flags.push('Unusually long chain of subdomains');
@@ -173,7 +187,10 @@ export async function checkLink(input: string, opts: { webRiskKey?: string; fetc
   ]);
   const knownThreat = threatStart ?? threatFinal;
 
-  return { input, finalUrl: final.href, hostname: start.hostname, redirects: hops, flags, knownThreat };
+  return {
+    input, finalUrl: final.href, hostname: start.hostname, redirects: hops, flags, knownThreat,
+    reputationChecked: Boolean(opts.webRiskKey),
+  };
 }
 
 /** Flags that should stop a "looks OK" verdict on their own. */

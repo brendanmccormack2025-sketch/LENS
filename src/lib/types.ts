@@ -33,6 +33,7 @@ export interface LinkCheck {
   redirects: number;
   flags: string[];
   knownThreat: string[] | null; // Google Web Risk threat types, if listed
+  reputationChecked: boolean;
 }
 
 export interface AnalyzeResponse {

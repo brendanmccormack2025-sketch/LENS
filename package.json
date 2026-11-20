@@ -35,7 +35,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test:url": "node --no-warnings --experimental-strip-types supabase/functions/_shared/url-checks.test.ts"
+    "test:url": "node --no-warnings --experimental-strip-types supabase/functions/_shared/url-checks.test.ts",
+    "build:dashboard-fn": "node scripts/build-dashboard-function.js"
   },
   "private": true
 }

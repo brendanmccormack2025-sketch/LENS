@@ -12,6 +12,11 @@ assert.ok(flags('http://192.168.4.20/login').some(isSevere));
 assert.ok(flags('xn--pypal-4ve.com').some(isSevere));
 assert.ok(flags('bit.ly/3aF6xxL').some((f) => f.includes('Shortened')));
 
+assert.ok(flags('https://n0w.us/-9NBVC').some((f) => f.includes('Shortened')));
+assert.ok(!flags('https://www.usps.com/manage').some((f) => f.includes('Shortened')));
+assert.ok(!flags('https://www.ups.com/Track9').some((f) => f.includes('Shortened')));
+assert.ok(!flags('https://abc.com/about').some((f) => f.includes('Shortened')));
+
 // Legit links should stay clean
 assert.deepEqual(flags('https://www.usps.com/manage/'), []);
 assert.deepEqual(flags('https://groups.google.com'), []);

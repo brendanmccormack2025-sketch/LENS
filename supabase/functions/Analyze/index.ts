@@ -122,6 +122,8 @@ async function callClaude(req: Req, linkChecks: LinkCheck[]) {
   return block.input as Record<string, unknown>;
 }
 
+const OVERCLAIM = /known threat|no threats|checked against|safe ?browsing|web risk|not (on|in) (any|a|google)/i;
+
 const str = (v: unknown, fallback = '') => (typeof v === 'string' ? v.slice(0, 600) : fallback);
 const strArr = (v: unknown, n: number) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string').slice(0, n).map((x) => x.slice(0, 300)) : []);
 
@@ -136,6 +138,8 @@ function finalize(r: Record<string, unknown>, linkChecks: LinkCheck[]) {
     .map((f) => ({ signal: f.signal.slice(0, 80), why: f.why.slice(0, 300) }));
 
   const threat = linkChecks.find((c) => c.knownThreat?.length);
+  // Never let the model claim a reputation check that didn't happen.
+  const reputationChecked = linkChecks.length > 0 && linkChecks.every((c) => c.reputationChecked);
   if (threat) {
     verdict = 'likely_scam';
     confidence = 'high';
@@ -154,7 +158,7 @@ function finalize(r: Record<string, unknown>, linkChecks: LinkCheck[]) {
     headline: str(r.headline, 'Here’s what LENS found'),
     what_it_is: str(r.what_it_is),
     red_flags: red_flags.slice(0, 5),
-    reassuring_signs: threat ? [] : strArr(r.reassuring_signs, 4),
+    reassuring_signs: threat ? [] : strArr(r.reassuring_signs, 4).filter((x) => reputationChecked || !OVERCLAIM.test(x)),
     next_steps: strArr(r.next_steps, 4),
     cannot_verify: str(r.cannot_verify, 'LENS can only judge what is shown here.'),
     link_checks: linkChecks,
