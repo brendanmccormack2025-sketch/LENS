@@ -1,6 +1,6 @@
 import IdentityLookup
 
-/// LENS Text Filter — iOS hands us texts from unknown senders (never contacts, never iMessage).
+/// Wary Text Filter — iOS hands us texts from unknown senders (never contacts, never iMessage).
 /// We score them on-device with ScamRules and send likely scams to the Junk folder.
 /// Nothing is sent anywhere: no network URL is configured, so there is no deferral.
 final class MessageFilterExtension: ILMessageFilterExtension {}

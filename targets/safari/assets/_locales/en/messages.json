@@ -1,4 +1,4 @@
 {
-  "extension_name": { "message": "LENS", "description": "Extension name" },
+  "extension_name": { "message": "Wary", "description": "Extension name" },
   "extension_description": { "message": "Warns you on the page when a website looks like a scam or a fake login page.", "description": "Extension description" }
 }

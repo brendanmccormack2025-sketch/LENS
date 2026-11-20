@@ -17,7 +17,7 @@ export function ResultView({ data, compact = false }: { data: AnalyzeResponse; c
         </View>
         <Text style={[s.verdictLabel, { color: v.color }]}>{v.label}</Text>
         <Text style={s.headline}>{a.headline}</Text>
-        <Text style={s.confidence}>LENS confidence: {a.confidence}</Text>
+        <Text style={s.confidence}>Wary confidence: {a.confidence}</Text>
       </View>
 
       {a.next_steps.length > 0 && (
@@ -79,7 +79,7 @@ export function ResultView({ data, compact = false }: { data: AnalyzeResponse; c
         </>
       )}
 
-      <SectionLabel>WHAT LENS CAN’T CHECK</SectionLabel>
+      <SectionLabel>WHAT WARY CAN’T CHECK</SectionLabel>
       <Text style={s.small}>{a.cannot_verify}</Text>
 
       {scansRemainingToday !== null && (

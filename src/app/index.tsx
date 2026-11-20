@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={s.wrap}>
-        <Text style={s.brand}>LENS</Text>
+        <Text style={s.brand}>WARY</Text>
         <Text style={s.hero}>What do you want to understand?</Text>
 
         <PrimaryButton
@@ -47,14 +47,14 @@ export default function Home() {
           />
           <ActionRow
             icon="🛡"
-            label="LENS Watch"
+            label="Wary Watch"
             hint="Automatic scam-text filtering and Safari warnings"
             onPress={() => router.push('/watch')}
           />
         </View>
 
         <Text style={s.foot}>
-          LENS gives its best judgement and shows you why. It can be wrong — when money or passwords are involved,
+          Wary gives its best judgement and shows you why. It can be wrong — when money or passwords are involved,
           check directly with the company using a number or app you already trust.
         </Text>
       </ScrollView>

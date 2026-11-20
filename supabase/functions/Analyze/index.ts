@@ -1,4 +1,4 @@
-// LENS analyze endpoint (Supabase Edge Function, Deno).
+// Wary analyze endpoint (Supabase Edge Function, Deno).
 // Flow: auth → daily quota → deterministic link checks → one Claude call → merge → respond.
 // Privacy: request content is never written to the database or logs.
 
@@ -68,7 +68,7 @@ Deno.serve(async (request) => {
   } catch (e) {
     console.error('model_error', (e as Error).message); // message only, never content
     await admin.rpc('refund_scan', { p_user: user.id });
-    return json({ error: 'LENS couldn’t finish checking this. Your scan wasn’t counted — please try again.' }, 502);
+    return json({ error: 'Wary couldn’t finish checking this. Your scan wasn’t counted — please try again.' }, 502);
   }
 
   // 6. For screenshots, check the links the model read off the image
@@ -87,7 +87,7 @@ async function callClaude(req: Req, linkChecks: LinkCheck[]) {
     content.push({ type: 'image', source: { type: 'base64', media_type: req.mediaType, data: req.imageBase64 } });
     content.push({ type: 'text', text: 'The user shared this image and wants to understand it. Analyze it.' });
   } else {
-    const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to LENS)' };
+    const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to Wary)' };
     const label = req.kind === 'url' ? `A web address the user got from ${from[req.source] ?? 'somewhere'}` : 'A message the user received';
     content.push({
       type: 'text',
@@ -155,12 +155,12 @@ function finalize(r: Record<string, unknown>, linkChecks: LinkCheck[]) {
   return {
     verdict,
     confidence,
-    headline: str(r.headline, 'Here’s what LENS found'),
+    headline: str(r.headline, 'Here’s what Wary found'),
     what_it_is: str(r.what_it_is),
     red_flags: red_flags.slice(0, 5),
     reassuring_signs: threat ? [] : strArr(r.reassuring_signs, 4).filter((x) => reputationChecked || !OVERCLAIM.test(x)),
     next_steps: strArr(r.next_steps, 4),
-    cannot_verify: str(r.cannot_verify, 'LENS can only judge what is shown here.'),
+    cannot_verify: str(r.cannot_verify, 'Wary can only judge what is shown here.'),
     link_checks: linkChecks,
   };
 }

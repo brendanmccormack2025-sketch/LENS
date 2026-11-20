@@ -1,8 +1,8 @@
-// LENS Safari content script. Bundled into targets/safari/assets/content.js by `npm run build:safari`.
+// Wary Safari content script. Bundled into targets/safari/assets/content.js by `npm run build:safari`.
 // Runs on every page the user allows, entirely on-device: nothing about the page leaves Safari.
 //
 // It only warns when there's strong evidence, because a false alarm on a real bank
-// teaches people to ignore LENS. Signals:
+// teaches people to ignore Wary. Signals:
 //   1. Severe address tricks (look-alike characters, raw IP, fake brand domain, "@")
 //   2. The page presents itself as a big brand AND asks for a password/card,
 //      but isn't on that brand's real website.
@@ -75,7 +75,7 @@ function showBanner(reasons: string[]) {
       .s{opacity:.75;font-size:13px;margin-top:8px}
     </style>
     <div class="b" role="alert">
-      <p class="t">⚠︎ LENS: this may be a scam website</p>
+      <p class="t">⚠︎ Wary: this may be a scam website</p>
       <ul>${reasons.map((r) => `<li>${r.replace(/[<>&]/g, '')}</li>`).join('')}</ul>
       <div class="row"><button class="leave">Get me out of here</button><button class="stay">I trust this site</button></div>
       <div class="s">Don’t enter passwords, card numbers or codes here. If you need the real company, type its address yourself.</div>

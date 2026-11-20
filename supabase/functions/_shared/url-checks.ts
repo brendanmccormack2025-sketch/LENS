@@ -1,5 +1,5 @@
 // Deterministic link checks. These run before/after the AI call and are the
-// part of LENS that doesn't depend on a model's judgement. Pure TS: runs in
+// part of Wary that doesn't depend on a model's judgement. Pure TS: runs in
 // Deno (edge function) and in Node (tests) without changes.
 
 export interface LinkCheck {
@@ -136,7 +136,7 @@ export async function followRedirects(start: URL, fetchImpl: FetchLike, maxHops 
         method: 'GET',
         redirect: 'manual',
         signal: AbortSignal.timeout(4000),
-        headers: { 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) LENS-LinkCheck' },
+        headers: { 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Wary-LinkCheck' },
       });
     } catch {
       return { final: current, hops };

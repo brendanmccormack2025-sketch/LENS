@@ -23,7 +23,7 @@ export default function QrScreen() {
     return (
       <SafeAreaView style={[s.fill, s.center]}>
         <Text style={s.title}>Camera access needed</Text>
-        <Text style={s.body}>LENS uses the camera only while this screen is open, to read the QR code.</Text>
+        <Text style={s.body}>Wary uses the camera only while this screen is open, to read the QR code.</Text>
         <PrimaryButton label="ALLOW CAMERA" onPress={requestPerm} />
         <Pressable onPress={() => router.back()} style={{ padding: 16 }}>
           <Text style={s.link}>Not now</Text>

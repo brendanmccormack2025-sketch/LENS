@@ -2,7 +2,7 @@
 module.exports = () => ({
   type: 'safari',
   name: 'LENSSafari',
-  displayName: 'LENS',
+  displayName: 'Wary',
   bundleIdentifier: '.safari',
   deploymentTarget: '16.4',
 });

@@ -2,7 +2,7 @@
 module.exports = () => ({
   type: 'message-filter',
   name: 'LENSTextFilter',
-  displayName: 'LENS',
+  displayName: 'Wary',
   bundleIdentifier: '.textfilter',
   deploymentTarget: '16.4',
 });

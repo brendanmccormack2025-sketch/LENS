@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "LENS",
+    "name": "Wary",
     "slug": "lens",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -42,6 +42,12 @@
     },
     "plugins": [
       [
+        "./plugins/withShareExtensionName",
+        {
+          "displayName": "Wary"
+        }
+      ],
+      [
         "./plugins/withDeploymentTarget",
         {
           "target": "16.4"
@@ -51,14 +57,14 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "LENS uses the camera to scan QR codes and things you want explained.",
+          "cameraPermission": "Wary uses the camera to scan QR codes and things you want explained.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "LENS needs access to the screenshot or photo you choose so it can explain it."
+          "photosPermission": "Wary needs access to the screenshot or photo you choose so it can explain it."
         }
       ],
       [
@@ -98,7 +104,7 @@
       ],
       "@bacons/apple-targets"
     ],
-    "scheme": "lens",
+    "scheme": "wary",
     "backgroundColor": "#0A0B0A",
     "experiments": {
       "typedRoutes": true

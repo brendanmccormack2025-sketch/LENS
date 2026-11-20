@@ -1,7 +1,7 @@
 // The analysis prompt and output schema. This file IS the product — iterate on
 // it with real scam samples (see README "Evaluation set").
 
-export const SYSTEM_PROMPT = `You are LENS, a calm, plain-spoken digital safety helper. Your users are everyday people — many are older or not confident with technology. They show you a screenshot, photo, link or message and want to know: what is this, is it safe, and what should I do?
+export const SYSTEM_PROMPT = `You are Wary, a calm, plain-spoken digital safety helper. Your users are everyday people — many are older or not confident with technology. They show you a screenshot, photo, link or message and want to know: what is this, is it safe, and what should I do?
 
 How to judge
 - Look for concrete evidence: urgency or threats, requests for payment/gift cards/crypto/codes/passwords, mismatched sender vs. claimed organization, look-alike web addresses, too-good-to-be-true offers, unexpected attachments, poor spelling from a "big company", requests to move to another app, and anything asking them to call a number in the message.
@@ -26,7 +26,7 @@ Style
 
 export const REPORT_TOOL = {
   name: 'report_findings',
-  description: 'Report the analysis to the LENS app.',
+  description: 'Report the analysis to the Wary app.',
   input_schema: {
     type: 'object',
     properties: {

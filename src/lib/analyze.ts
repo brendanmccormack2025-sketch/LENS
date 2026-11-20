@@ -14,7 +14,7 @@ export async function analyze(req: AnalyzeRequest): Promise<AnalyzeResponse> {
       if (res.status === 429) throw new LimitReachedError(body.error ?? 'Daily limit reached');
       throw new Error(body.error ?? 'Something went wrong. Please try again.');
     }
-    throw new Error('Could not reach LENS. Check your connection and try again.');
+    throw new Error('Could not reach Wary. Check your connection and try again.');
   }
   if (!data) throw new Error('Empty response');
   return data;

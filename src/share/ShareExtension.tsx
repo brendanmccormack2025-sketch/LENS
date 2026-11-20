@@ -41,7 +41,7 @@ export default function ShareExtension(props: InitialProps) {
     (async () => {
       const req = await toRequest(props).catch(() => null);
       if (!req) {
-        setState({ status: 'error', title: 'Nothing to check', message: 'LENS can check links, text and screenshots.' });
+        setState({ status: 'error', title: 'Nothing to check', message: 'Wary can check links, text and screenshots.' });
         return;
       }
       setState({ status: 'loading', step: 'Looking closely…' });
@@ -63,7 +63,7 @@ export default function ShareExtension(props: InitialProps) {
   return (
     <View style={s.sheet}>
       <View style={s.header}>
-        <Text style={s.brand}>LENS</Text>
+        <Text style={s.brand}>WARY</Text>
         <Pressable onPress={close} hitSlop={16} accessibilityLabel="Close" style={s.close}>
           <Text style={s.closeText}>✕</Text>
         </Pressable>

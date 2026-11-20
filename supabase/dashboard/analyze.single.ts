@@ -4,7 +4,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // ---- url-checks ----
 // Deterministic link checks. These run before/after the AI call and are the
-// part of LENS that doesn't depend on a model's judgement. Pure TS: runs in
+// part of Wary that doesn't depend on a model's judgement. Pure TS: runs in
 // Deno (edge function) and in Node (tests) without changes.
 
 interface LinkCheck {
@@ -141,7 +141,7 @@ async function followRedirects(start: URL, fetchImpl: FetchLike, maxHops = 5): P
         method: 'GET',
         redirect: 'manual',
         signal: AbortSignal.timeout(4000),
-        headers: { 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) LENS-LinkCheck' },
+        headers: { 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Wary-LinkCheck' },
       });
     } catch {
       return { final: current, hops };
@@ -206,7 +206,7 @@ const isSevere = (flag: string) => SEVERE.some((re) => re.test(flag));
 // The analysis prompt and output schema. This file IS the product — iterate on
 // it with real scam samples (see README "Evaluation set").
 
-const SYSTEM_PROMPT = `You are LENS, a calm, plain-spoken digital safety helper. Your users are everyday people — many are older or not confident with technology. They show you a screenshot, photo, link or message and want to know: what is this, is it safe, and what should I do?
+const SYSTEM_PROMPT = `You are Wary, a calm, plain-spoken digital safety helper. Your users are everyday people — many are older or not confident with technology. They show you a screenshot, photo, link or message and want to know: what is this, is it safe, and what should I do?
 
 How to judge
 - Look for concrete evidence: urgency or threats, requests for payment/gift cards/crypto/codes/passwords, mismatched sender vs. claimed organization, look-alike web addresses, too-good-to-be-true offers, unexpected attachments, poor spelling from a "big company", requests to move to another app, and anything asking them to call a number in the message.
@@ -231,7 +231,7 @@ Style
 
 const REPORT_TOOL = {
   name: 'report_findings',
-  description: 'Report the analysis to the LENS app.',
+  description: 'Report the analysis to the Wary app.',
   input_schema: {
     type: 'object',
     properties: {
@@ -261,7 +261,7 @@ const REPORT_TOOL = {
 } as const;
 
 // ---- handler ----
-// LENS analyze endpoint (Supabase Edge Function, Deno).
+// Wary analyze endpoint (Supabase Edge Function, Deno).
 // Flow: auth → daily quota → deterministic link checks → one Claude call → merge → respond.
 // Privacy: request content is never written to the database or logs.
 
@@ -328,7 +328,7 @@ Deno.serve(async (request) => {
   } catch (e) {
     console.error('model_error', (e as Error).message); // message only, never content
     await admin.rpc('refund_scan', { p_user: user.id });
-    return json({ error: 'LENS couldn’t finish checking this. Your scan wasn’t counted — please try again.' }, 502);
+    return json({ error: 'Wary couldn’t finish checking this. Your scan wasn’t counted — please try again.' }, 502);
   }
 
   // 6. For screenshots, check the links the model read off the image
@@ -347,7 +347,7 @@ async function callClaude(req: Req, linkChecks: LinkCheck[]) {
     content.push({ type: 'image', source: { type: 'base64', media_type: req.mediaType, data: req.imageBase64 } });
     content.push({ type: 'text', text: 'The user shared this image and wants to understand it. Analyze it.' });
   } else {
-    const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to LENS)' };
+    const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to Wary)' };
     const label = req.kind === 'url' ? `A web address the user got from ${from[req.source] ?? 'somewhere'}` : 'A message the user received';
     content.push({
       type: 'text',
@@ -415,12 +415,12 @@ function finalize(r: Record<string, unknown>, linkChecks: LinkCheck[]) {
   return {
     verdict,
     confidence,
-    headline: str(r.headline, 'Here’s what LENS found'),
+    headline: str(r.headline, 'Here’s what Wary found'),
     what_it_is: str(r.what_it_is),
     red_flags: red_flags.slice(0, 5),
     reassuring_signs: threat ? [] : strArr(r.reassuring_signs, 4).filter((x) => reputationChecked || !OVERCLAIM.test(x)),
     next_steps: strArr(r.next_steps, 4),
-    cannot_verify: str(r.cannot_verify, 'LENS can only judge what is shown here.'),
+    cannot_verify: str(r.cannot_verify, 'Wary can only judge what is shown here.'),
     link_checks: linkChecks,
   };
 }

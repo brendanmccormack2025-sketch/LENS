@@ -184,7 +184,7 @@
       .s{opacity:.75;font-size:13px;margin-top:8px}
     </style>
     <div class="b" role="alert">
-      <p class="t">\u26A0\uFE0E LENS: this may be a scam website</p>
+      <p class="t">\u26A0\uFE0E Wary: this may be a scam website</p>
       <ul>${reasons.map((r) => `<li>${r.replace(/[<>&]/g, "")}</li>`).join("")}</ul>
       <div class="row"><button class="leave">Get me out of here</button><button class="stay">I trust this site</button></div>
       <div class="s">Don\u2019t enter passwords, card numbers or codes here. If you need the real company, type its address yourself.</div>
