@@ -30,7 +30,11 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -90,6 +94,35 @@
     "backgroundColor": "#0A0B0A",
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "LENSShareExtension",
+                  "bundleIdentifier": "com.brendanmccormack.lens.ShareExtension",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.brendanmccormack.lens"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "631297ec-9d5f-4839-90ae-412875861b3c"
+      },
+      "appleApplicationGroup": "group.com.brendanmccormack.lens"
+    },
+    "owner": "brendanbjhvh"
   }
 }
