@@ -11,7 +11,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 const FTC = 'https://api.ftc.gov/v0/dnc-complaints';
 const API_KEY = Deno.env.get('FTC_API_KEY') ?? 'DEMO_KEY';
 const LOOKBACK_DAYS = 60;
-const MAX_DAYS_PER_RUN = 6; // ~110 requests/day of data; api.data.gov allows 1,000/hour
+const MAX_DAYS_PER_RUN = 3; // ~100+ requests per day of data; keeps each run well inside time and rate limits
 const PAGE = 50; // FTC maximum
 
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -27,7 +27,7 @@ function toE164(raw: unknown): number | null {
   return Number('1' + ten);
 }
 
-async function fetchPage(day: string, offset: number): Promise<{ rows: any[]; total: number }> {
+async function fetchPage(day: string, offset: number): Promise<{ rows: any[] }> {
   const qs = new URLSearchParams({
     api_key: API_KEY,
     created_date: `"${day}"`,
@@ -40,7 +40,7 @@ async function fetchPage(day: string, offset: number): Promise<{ rows: any[]; to
     if (res.status === 429) throw new Error('rate limited');
     if (res.ok) {
       const body = await res.json();
-      return { rows: body?.data ?? [], total: Number(body?.meta?.['record-total'] ?? 0) };
+      return { rows: Array.isArray(body?.data) ? body.data : [] };
     }
     await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
   }
@@ -48,16 +48,19 @@ async function fetchPage(day: string, offset: number): Promise<{ rows: any[]; to
 }
 
 async function ingestDay(day: string): Promise<number> {
-  const first = await fetchPage(day, 0);
-  const total = first.total;
-  const all = [...first.rows];
-  const offsets: number[] = [];
-  for (let o = PAGE; o < total; o += PAGE) offsets.push(o);
-
-  // A few pages at a time to stay polite to the FTC API.
-  for (let i = 0; i < offsets.length; i += 5) {
-    const pages = await Promise.all(offsets.slice(i, i + 5).map((o) => fetchPage(day, o)));
-    for (const p of pages) all.push(...p.rows);
+  // Don't trust the reported total (the FTC's meta fields aren't reliable): keep paging,
+  // 5 pages at a time, until a page comes back short.
+  const all: any[] = [];
+  let offset = 0;
+  let done = false;
+  while (!done) {
+    const batch = await Promise.all([0, 1, 2, 3, 4].map((k) => fetchPage(day, offset + k * PAGE)));
+    for (const p of batch) {
+      all.push(...p.rows);
+      if (p.rows.length < PAGE) done = true;
+    }
+    offset += 5 * PAGE;
+    if (offset > 50_000) break; // safety stop: no single day comes close to this
   }
 
   const agg = new Map<number, Agg>();
