@@ -56,6 +56,12 @@ public class WaryNativeModule: Module {
       }
     }
 
+    /// Reads a number written by one of Wary's extensions into the shared App Group defaults.
+    Function("readSharedNumber") { (group: String, key: String) -> Double? in
+      let value = UserDefaults(suiteName: group)?.double(forKey: key) ?? 0
+      return value > 0 ? value : nil
+    }
+
     /// True if the iPhone has a passcode (or Face ID / Touch ID backed by one).
     Function("isPasscodeSet") { () -> Bool in
       LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)

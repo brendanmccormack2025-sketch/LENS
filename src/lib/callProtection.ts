@@ -70,3 +70,13 @@ export function isPasscodeSet(): boolean | null {
     return null;
   }
 }
+
+/** When the Safari extension last reported in (seconds since 1970), or null if never. */
+export function safariLastSeen(): number | null {
+  if (!nativeAvailable()) return null;
+  try {
+    return WaryNative!.readSharedNumber(APP_GROUP, 'safari.lastSeen');
+  } catch {
+    return null;
+  }
+}

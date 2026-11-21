@@ -15,3 +15,7 @@ export async function getManual(): Promise<Record<ManualProtection, boolean>> {
 export async function setManual(p: ManualProtection, on: boolean) {
   await AsyncStorage.setItem(key(p), on ? '1' : '0');
 }
+
+const ONBOARDED = 'setup.onboarded';
+export const isOnboarded = async () => (await AsyncStorage.getItem(ONBOARDED)) === '1';
+export const markOnboarded = () => AsyncStorage.setItem(ONBOARDED, '1');

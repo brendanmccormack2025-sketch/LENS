@@ -8,6 +8,7 @@ interface WaryNativeModule {
   callDirectoryStatus(identifier: string): Promise<CallStatus>;
   openCallSettings(): Promise<void>;
   isPasscodeSet(): boolean;
+  readSharedNumber(group: string, key: string): number | null;
 }
 
 /** Null in Expo Go / web, where the native module isn't compiled in. */

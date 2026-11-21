@@ -108,6 +108,16 @@ function run() {
   if (reasons.length) showBanner(reasons);
 }
 
+// Tell the Wary app the extension is switched on (lets its setup screen tick this off
+// automatically). Sends nothing about the page — just "I'm running".
+try {
+  if (!sessionStorage.getItem('wary-ping')) {
+    sessionStorage.setItem('wary-ping', '1');
+    const rt = ((globalThis as any).browser ?? (globalThis as any).chrome)?.runtime;
+    rt?.sendMessage({ type: 'wary-ping' })?.catch?.(() => {});
+  }
+} catch {}
+
 run();
 // Phishing kits often render the login form after load — check once more shortly after.
 setTimeout(() => {

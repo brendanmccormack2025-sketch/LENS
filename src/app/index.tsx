@@ -10,12 +10,12 @@ import {
   isPasscodeSet,
   lastSync,
   nativeAvailable,
-  openCallSettings,
+  safariLastSeen,
   syncCallList,
   type CallSyncInfo,
 } from '../lib/callProtection';
 import { pickScreenshot } from '../lib/pickImage';
-import { getManual } from '../lib/setup';
+import { getManual, isOnboarded } from '../lib/setup';
 import { colors, radius, type } from '../theme';
 
 type Row = { key: string; title: string; on: boolean | null; detail: string; action?: string; onPress?: () => void };
@@ -29,7 +29,7 @@ export default function Home() {
   const refresh = useCallback(async () => {
     const [status, m, s] = await Promise.all([getCallStatus(), getManual(), lastSync()]);
     setCalls(status);
-    setManualState(m);
+    setManualState({ texts: m.texts, safari: m.safari || safariLastSeen() != null });
     setSync(s);
     setPasscode(isPasscodeSet());
     // Keep the caller list fresh whenever Wary is opened.
@@ -40,6 +40,8 @@ export default function Home() {
 
   useFocusEffect(
     useCallback(() => {
+      // First launch: walk through setup before anything else.
+      isOnboarded().then((ok) => !ok && router.push('/setup'));
       refresh();
       // Re-check when the user comes back from Settings.
       const sub = AppState.addEventListener('change', (st) => st === 'active' && refresh());
@@ -63,7 +65,7 @@ export default function Home() {
       on: calls === 'enabled',
       detail: callsDetail,
       action: calls === 'enabled' ? undefined : 'Turn on',
-      onPress: calls === 'enabled' ? undefined : () => router.push('/watch'),
+      onPress: calls === 'enabled' ? undefined : () => router.push('/setup'),
     },
     {
       key: 'texts',
@@ -71,7 +73,7 @@ export default function Home() {
       on: manual.texts,
       detail: manual.texts ? 'Scam texts from unknown numbers go to Junk' : 'Send scam texts straight to Junk',
       action: manual.texts ? undefined : 'Set up',
-      onPress: () => router.push('/watch'),
+      onPress: () => router.push('/setup'),
     },
     {
       key: 'safari',
@@ -79,7 +81,7 @@ export default function Home() {
       on: manual.safari,
       detail: manual.safari ? 'Red warning on fake sites in Safari' : 'Warn me on fake websites in Safari',
       action: manual.safari ? undefined : 'Set up',
-      onPress: () => router.push('/watch'),
+      onPress: () => router.push('/setup'),
     },
     {
       key: 'passcode',
@@ -104,15 +106,19 @@ export default function Home() {
       <ScrollView contentContainerStyle={s.wrap}>
         <Text style={s.brand}>WARY</Text>
 
-        <View style={[s.status, { borderColor: allOn ? colors.safe : colors.caution }]}>
+        <Pressable
+          onPress={allOn ? undefined : () => router.push('/setup')}
+          disabled={allOn}
+          style={[s.status, { borderColor: allOn ? colors.safe : colors.caution }]}
+        >
           <Text style={[s.statusIcon, { color: allOn ? colors.safe : colors.caution }]}>{allOn ? '✓' : '!'}</Text>
           <Text style={s.hero}>{allOn ? 'You’re protected' : 'Finish setting up'}</Text>
           <Text style={s.sub}>
             {allOn
               ? 'Wary is watching your calls, texts and Safari — even while the app is closed.'
-              : `${onCount} of ${rows.length} protections on. Each takes about 30 seconds.`}
+              : `${onCount} of ${rows.length} protections on. Tap to finish — about a minute.`}
           </Text>
-        </View>
+        </Pressable>
 
         <View style={{ gap: 10 }}>
           {rows.map((r) => (
@@ -136,12 +142,6 @@ export default function Home() {
             </Pressable>
           ))}
         </View>
-
-        {calls !== 'enabled' && nativeAvailable() ? (
-          <Pressable onPress={openCallSettings} accessibilityRole="button">
-            <Text style={s.link}>Open call settings →</Text>
-          </Pressable>
-        ) : null}
 
         <View style={s.tip}>
           <Text style={s.tipTitle}>Unknown caller, nobody there?</Text>

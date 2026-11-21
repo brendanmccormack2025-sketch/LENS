@@ -20,6 +20,7 @@ export default function RootLayout() {
         <Stack.Screen name="qr" options={{ title: 'Scan a QR code', presentation: 'fullScreenModal' }} />
         <Stack.Screen name="result" options={{ title: 'What Wary found' }} />
         <Stack.Screen name="watch" options={{ title: 'Wary Watch' }} />
+        <Stack.Screen name="setup" options={{ title: 'Set up Wary', headerBackTitle: 'Home' }} />
       </Stack>
     </>
   );

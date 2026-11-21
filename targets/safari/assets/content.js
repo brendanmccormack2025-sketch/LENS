@@ -217,6 +217,15 @@
     const reasons = reasonsFor(url);
     if (reasons.length) showBanner(reasons);
   }
+  try {
+    if (!sessionStorage.getItem("wary-ping")) {
+      sessionStorage.setItem("wary-ping", "1");
+      const rt = (globalThis.browser ?? globalThis.chrome)?.runtime;
+      rt?.sendMessage({ type: "wary-ping" })?.catch?.(() => {
+      });
+    }
+  } catch {
+  }
   run();
   setTimeout(() => {
     if (!shown) run();

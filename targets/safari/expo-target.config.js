@@ -5,4 +5,5 @@ module.exports = () => ({
   displayName: 'Wary',
   bundleIdentifier: '.safari',
   deploymentTarget: '16.4',
+  entitlements: { 'com.apple.security.application-groups': ['group.com.brendanmccormack.lens'] },
 });

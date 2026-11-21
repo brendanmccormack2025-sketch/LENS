@@ -1,9 +1,16 @@
+import Foundation
 import SafariServices
 
-// LENS's Safari extension runs entirely in its content script (assets/content.js).
-// This native handler is required by Safari but currently has nothing to do.
+/// Receives the extension's "I'm running" heartbeat and records the time in the shared
+/// App Group, so the Wary app can show Safari protection as switched on automatically.
+/// No page content or browsing data is ever sent here.
 class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
+    static let appGroup = "group.com.brendanmccormack.lens"
+
     func beginRequest(with context: NSExtensionContext) {
-        context.completeRequest(returningItems: [], completionHandler: nil)
+        UserDefaults(suiteName: Self.appGroup)?.set(Date().timeIntervalSince1970, forKey: "safari.lastSeen")
+        let response = NSExtensionItem()
+        response.userInfo = [SFExtensionMessageKey: ["ok": true]]
+        context.completeRequest(returningItems: [response], completionHandler: nil)
     }
 }
