@@ -97,11 +97,17 @@ export default function Watch() {
           folder.
         </Text>
         <Step n={1}>
-          Open <B>Settings</B> → <B>Apps</B> → <B>Messages</B> (on older iPhones, just <B>Messages</B>)
+          Open <B>Settings</B> → <B>Apps</B> → <B>Messages</B>
         </Step>
         <Step n={2}>
-          Tap <B>Unknown & Spam</B>, then under SMS Filtering choose <B>Wary</B>
+          Under <B>Unknown Senders</B>, turn on <B>Screen Unknown Senders</B>
         </Step>
+        <Step n={3}>
+          Tap <B>Text Message Filter</B> and choose <B>Wary</B>
+        </Step>
+        <Text style={s.small}>
+          On older iPhones: Settings → Messages → Unknown & Spam → choose Wary under SMS Filtering.
+        </Text>
         <DoneButton done={manual.texts} onPress={() => toggle('texts')} />
         <Text style={s.small}>
           iPhone only lets Wary see texts from unknown numbers — never your contacts, and never iMessages. Everything is
