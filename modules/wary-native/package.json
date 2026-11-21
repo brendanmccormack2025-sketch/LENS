@@ -1,0 +1,7 @@
+{
+  "name": "wary-native",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts",
+  "description": "Wary's small native helpers: app-group files, Call Directory control, passcode check"
+}

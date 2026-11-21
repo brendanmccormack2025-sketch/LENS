@@ -22,7 +22,12 @@
           }
         ]
       },
-      "appleTeamId": "WH3N6PVX8Y"
+      "appleTeamId": "WH3N6PVX8Y",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.brendanmccormack.lens"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -116,23 +121,6 @@
         }
       },
       "eas": {
-        "build": {
-          "experimental": {
-            "ios": {
-              "appExtensions": [
-                {
-                  "targetName": "LENSShareExtension",
-                  "bundleIdentifier": "com.brendanmccormack.lens.ShareExtension",
-                  "entitlements": {
-                    "com.apple.security.application-groups": [
-                      "group.com.brendanmccormack.lens"
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        },
         "projectId": "631297ec-9d5f-4839-90ae-412875861b3c"
       },
       "appleApplicationGroup": "group.com.brendanmccormack.lens"

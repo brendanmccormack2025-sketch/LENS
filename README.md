@@ -1,4 +1,4 @@
-# Wary — v0.1 (manual scanning MVP)
+# Wary
 
 Screenshot / photo / link / message / QR → plain-English verdict, warning signs and next steps.
 
@@ -29,6 +29,24 @@ Share a text, link or screenshot from any app → Wary card slides up with the v
   (Debug builds try to load the share card's JS from your dev server, which won't work through a Codespace tunnel.)
 - Known limitation: the share card keeps its own anonymous login, separate from the app's, so its free-scan count is separate too.
   We'll fix this when real accounts arrive by sharing the login through the app group or keychain.
+
+
+## Scam-call labels (Wary Caller ID)
+
+Incoming calls from numbers people reported to the FTC show "Wary: Reported …" on the call screen.
+
+- `targets/caller-id/` — Call Directory extension; reads `calllist.bin` from the App Group (memory-mapped 9-byte records).
+- `modules/wary-native/` — tiny local Expo module: write App Group file, reload/check Call Directory, passcode check.
+- `supabase/functions/IngestFtc` — hourly import of FTC Do Not Call complaint data → `reported_numbers`.
+- `supabase/functions/CallList` — returns the list (numbers with 2+ reports in 90 days) for the app to hand to iOS.
+- The app re-downloads the list at most once a day, when it's opened (iOS has no background schedule for this).
+
+### Backend setup (dashboard)
+1. SQL Editor → run `supabase/migrations/20261121000000_reported_numbers.sql`.
+2. Edge Functions → Secrets → add `FTC_API_KEY` (free: https://api.data.gov/signup) and `CRON_SECRET` (any long random string).
+3. Deploy `IngestFtc` (paste `supabase/functions/IngestFtc/index.ts`) — then Settings → turn OFF "Verify JWT".
+4. Deploy `CallList` (paste `supabase/functions/CallList/index.ts`) — then Settings → turn OFF "Verify JWT" (it checks the user itself).
+5. Database → Extensions → enable `pg_cron` and `pg_net`; SQL Editor → run `supabase/dashboard/schedule-ingest.sql` with your secret pasted in.
 
 ## Backend setup with no terminal (Supabase dashboard only)
 
