@@ -10,7 +10,6 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const FTC = 'https://api.ftc.gov/v0/dnc-complaints';
 const API_KEY = Deno.env.get('FTC_API_KEY') ?? 'DEMO_KEY';
-const CRON_SECRET = Deno.env.get('CRON_SECRET');
 const LOOKBACK_DAYS = 60;
 const MAX_DAYS_PER_RUN = 6; // ~110 requests/day of data; api.data.gov allows 1,000/hour
 const PAGE = 50; // FTC maximum
@@ -89,8 +88,15 @@ async function ingestDay(day: string): Promise<number> {
 }
 
 Deno.serve(async (req) => {
-  if (!CRON_SECRET || req.headers.get('x-cron-secret') !== CRON_SECRET) {
-    return new Response('forbidden', { status: 403 });
+  // Read per request (not at boot) so a changed secret takes effect immediately,
+  // and say which check failed — "forbidden" alone is impossible to debug.
+  const expected = (Deno.env.get('CRON_SECRET') ?? '').trim();
+  const got = (req.headers.get('x-cron-secret') ?? '').trim();
+  if (!expected) return new Response('CRON_SECRET is not set in Edge Function secrets', { status: 403 });
+  if (!got) return new Response('missing x-cron-secret header', { status: 403 });
+  if (got !== expected) {
+    const hint = (v: string) => `${v.length} chars, starts ${v.slice(0, 4)}, ends ${v.slice(-4)}`;
+    return new Response(`secret mismatch — sent (${hint(got)}) vs saved (${hint(expected)})`, { status: 403 });
   }
 
   const { data: done } = await admin
