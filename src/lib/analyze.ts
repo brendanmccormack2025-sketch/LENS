@@ -22,8 +22,17 @@ export async function analyze(req: AnalyzeRequest): Promise<AnalyzeResponse> {
 
 // Tiny hand-off so large payloads (screenshots) don't go through route params.
 let pending: AnalyzeRequest | null = null;
+
+// The "what's confusing you?" text lives here so every scan path (camera, photos, QR, paste)
+// attaches it the same way. Empty means the field is left out entirely.
+export const MAX_QUESTION = 300;
+let question = '';
+export const setQuestion = (q: string) => {
+  question = q;
+};
 export const setPending = (r: AnalyzeRequest) => {
-  pending = r;
+  const q = question.trim().slice(0, MAX_QUESTION).trim();
+  pending = q ? { ...r, question: q } : r;
 };
 export const takePending = () => {
   const r = pending;

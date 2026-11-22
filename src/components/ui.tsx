@@ -1,4 +1,7 @@
-import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Pressable, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
+import { MAX_QUESTION, setQuestion } from '../lib/analyze';
 import { AppText as Text } from './AppText';
 import * as Haptics from 'expo-haptics';
 import { colors, radius, type } from '../theme';
@@ -17,6 +20,33 @@ export function PrimaryButton({ label, onPress, sub }: { label: string; sub?: st
       <Text style={s.primaryLabel}>{label}</Text>
       {sub ? <Text style={s.primarySub}>{sub}</Text> : null}
     </Pressable>
+  );
+}
+
+/** Optional "What's confusing you?" box. Its text is sent as `question` with the next scan. */
+export function QuestionInput({ dark }: { dark?: boolean }) {
+  const [value, setValue] = useState('');
+  // Start empty every time the screen comes into focus (e.g. back from a result).
+  useFocusEffect(
+    useCallback(() => {
+      setValue('');
+      setQuestion('');
+    }, [])
+  );
+  return (
+    <TextInput
+      value={value}
+      onChangeText={(t) => {
+        setValue(t);
+        setQuestion(t);
+      }}
+      maxLength={MAX_QUESTION}
+      placeholder="What's confusing you? (optional)"
+      placeholderTextColor={dark ? '#ccc' : colors.textMuted}
+      accessibilityLabel="What's confusing you? Optional"
+      returnKeyType="done"
+      style={[s.question, dark && s.questionDark]}
+    />
   );
 }
 
@@ -54,6 +84,17 @@ export function SectionLabel({ children }: { children: string }) {
 }
 
 const s = StyleSheet.create({
+  question: {
+    color: colors.text,
+    fontSize: 17,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: radius,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  questionDark: { backgroundColor: '#000b', color: '#fff', borderColor: '#fff6' },
   primary: {
     backgroundColor: colors.mint,
     borderRadius: radius,

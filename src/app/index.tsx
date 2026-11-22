@@ -4,7 +4,7 @@ import { router, useFocusEffect, useIsFocused } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PrimaryButton } from '../components/ui';
+import { PrimaryButton, QuestionInput } from '../components/ui';
 import { setPending } from '../lib/analyze';
 import { pickScreenshot } from '../lib/pickImage';
 import { prepareImage } from '../lib/prepareImage';
@@ -152,6 +152,9 @@ export default function Scanner() {
           )}
         </View>
 
+        <View style={{ paddingHorizontal: 20, marginBottom: 10 }}>
+          <QuestionInput dark />
+        </View>
         <Text style={s.hint}>Point at a pop-up, letter, message or QR code — or tap Photos for a screenshot or video</Text>
 
         <View style={s.controls}>
