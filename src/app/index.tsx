@@ -97,7 +97,7 @@ export default function Scanner() {
             <Text style={s.permBody}>Camera access is off. You can turn it on in Settings → Apps → Wary.</Text>
           )}
           <View style={s.altRow}>
-            <AltButton label="Choose a screenshot" onPress={fromPhotos} />
+            <AltButton label="Choose a photo or video" onPress={fromPhotos} />
             <AltButton label="Paste a link or text" onPress={() => router.push('/link')} />
           </View>
         </View>
@@ -152,7 +152,7 @@ export default function Scanner() {
           )}
         </View>
 
-        <Text style={s.hint}>Point at a pop-up, letter, message or QR code — then tap the button</Text>
+        <Text style={s.hint}>Point at a pop-up, letter, message or QR code — or tap Photos for a screenshot or video</Text>
 
         <View style={s.controls}>
           <SideButton label="Photos" icon="🖼" onPress={fromPhotos} />

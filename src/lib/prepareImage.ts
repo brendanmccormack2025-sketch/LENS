@@ -6,15 +6,15 @@ import type { AnalyzeRequest } from './types';
 const MAX_EDGE = 1568;
 
 /** Local image file → small JPEG request ready for the analyze endpoint. */
-export async function prepareImage(uri: string): Promise<AnalyzeRequest> {
+export async function prepareImage(uri: string, maxEdge = MAX_EDGE): Promise<Extract<AnalyzeRequest, { kind: 'image' }>> {
   const original = await ImageManipulator.manipulate(uri).renderAsync();
   const { width, height } = original;
   const longEdge = Math.max(width, height);
 
   const sized =
-    longEdge > MAX_EDGE
+    longEdge > maxEdge
       ? await ImageManipulator.manipulate(original)
-          .resize(width >= height ? { width: MAX_EDGE } : { height: MAX_EDGE })
+          .resize(width >= height ? { width: maxEdge } : { height: maxEdge })
           .renderAsync()
       : original;
 

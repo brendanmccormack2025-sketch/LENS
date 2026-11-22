@@ -280,7 +280,8 @@ const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE
 type Req =
   | { kind: 'image'; imageBase64: string; mediaType: 'image/jpeg' | 'image/png' }
   | { kind: 'url'; url: string; source: 'qr' | 'paste' | 'share' }
-  | { kind: 'text'; text: string };
+  | { kind: 'text'; text: string }
+  | { kind: 'video'; frames: { imageBase64: string; mediaType: 'image/jpeg' }[]; durationSec: number | null };
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -305,7 +306,13 @@ Deno.serve(async (request) => {
     return json({ error: 'That image is too large. Try a screenshot instead of a full photo.' }, 413);
   if (body.kind === 'text' && !body.text?.trim()) return json({ error: 'Nothing to check' }, 400);
   if (body.kind === 'url' && !body.url?.trim()) return json({ error: 'Nothing to check' }, 400);
-  if (!['image', 'text', 'url'].includes(body.kind)) return json({ error: 'Bad request' }, 400);
+  if (body.kind === 'video') {
+    const frames = Array.isArray(body.frames) ? body.frames.slice(0, 4) : [];
+    if (!frames.length || frames.some((f) => !f?.imageBase64 || f.imageBase64.length > 1_500_000))
+      return json({ error: 'That video couldn’t be read. Try a shorter clip or a screenshot.' }, 413);
+    body.frames = frames;
+  }
+  if (!['image', 'text', 'url', 'video'].includes(body.kind)) return json({ error: 'Bad request' }, 400);
 
   // 3. Quota (atomic, server-side; the client can't change its own limit)
   const { data: remaining, error: quotaErr } = await admin.rpc('consume_scan', {
@@ -334,7 +341,7 @@ Deno.serve(async (request) => {
   }
 
   // 6. For screenshots, check the links the model read off the image
-  if (body.kind === 'image') {
+  if (body.kind === 'image' || body.kind === 'video') {
     const seen = (report.urls_seen as string[] | undefined)?.slice(0, 3) ?? [];
     const more = await Promise.all(seen.map((u) => checkLink(u, { webRiskKey: WEB_RISK_KEY, fetchImpl })));
     linkChecks.push(...more.filter((c): c is LinkCheck => c !== null));
@@ -348,6 +355,19 @@ async function callClaude(req: Req, linkChecks: LinkCheck[]) {
   if (req.kind === 'image') {
     content.push({ type: 'image', source: { type: 'base64', media_type: req.mediaType, data: req.imageBase64 } });
     content.push({ type: 'text', text: 'The user shared this image and wants to understand it. Analyze it.' });
+  } else if (req.kind === 'video') {
+    for (const f of req.frames) {
+      content.push({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: f.imageBase64 } });
+    }
+    content.push({
+      type: 'text',
+      text:
+        `These are ${req.frames.length} still frames taken in order from a video${req.durationSec ? ` about ${req.durationSec} seconds long` : ''} the user wants to understand. ` +
+        'You cannot hear the audio or see motion between frames. Look for scam patterns (fake giveaways, celebrity or official ' +
+        'endorsements of investments or crypto, urgent requests to call or pay, on-screen links or numbers) and visible signs of ' +
+        'AI-generated or edited video (warped hands, teeth or text, mismatched lighting, faces that change between frames). ' +
+        'Be honest that still frames cannot prove a video is real or fake; say what to check independently.',
+    });
   } else {
     const from = { qr: 'a QR code', paste: 'something they pasted', share: 'another app (shared to Wary)' };
     const label = req.kind === 'url' ? `A web address the user got from ${from[req.source] ?? 'somewhere'}` : 'A message the user received';

@@ -6,7 +6,8 @@ export type Verdict = 'likely_safe' | 'be_careful' | 'likely_scam' | 'unclear';
 export type AnalyzeRequest =
   | { kind: 'image'; imageBase64: string; mediaType: 'image/jpeg' | 'image/png' }
   | { kind: 'url'; url: string; source: 'qr' | 'paste' | 'share' }
-  | { kind: 'text'; text: string };
+  | { kind: 'text'; text: string }
+  | { kind: 'video'; frames: { imageBase64: string; mediaType: 'image/jpeg' }[]; durationSec: number | null };
 
 export interface RedFlag {
   signal: string; // short label, e.g. "Urgent payment request"
