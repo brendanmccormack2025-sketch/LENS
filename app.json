@@ -62,7 +62,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Wary uses the camera to scan QR codes and things you want explained.",
+          "cameraPermission": "Wary uses the camera to look at things you want checked \u2014 like a pop-up, a letter or a QR code \u2014 only while the scanner is open.",
           "recordAudioAndroid": false
         }
       ],

@@ -15,7 +15,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.bg },
         }}
       >
-        <Stack.Screen name="index" options={{ headerShown: false, title: 'Home' }} />
+        <Stack.Screen name="index" options={{ headerShown: false, title: 'Scan' }} />
+        <Stack.Screen name="protection" options={{ title: 'Your protection', headerBackTitle: 'Scan' }} />
         <Stack.Screen name="link" options={{ title: 'Check a link or message' }} />
         <Stack.Screen name="qr" options={{ title: 'Scan a QR code', presentation: 'fullScreenModal' }} />
         <Stack.Screen name="result" options={{ title: 'What Wary found' }} />
