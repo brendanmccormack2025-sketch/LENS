@@ -2,7 +2,7 @@ import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { PrimaryButton } from '../components/ui';
+import { PrimaryButton, QuestionInput } from '../components/ui';
 import { setPending } from '../lib/analyze';
 import { colors, radius, type } from '../theme';
 
@@ -36,6 +36,7 @@ export default function LinkScreen() {
       <Pressable onPress={paste} style={s.paste} accessibilityRole="button">
         <Text style={s.pasteText}>Paste from clipboard</Text>
       </Pressable>
+      <QuestionInput />
       <View style={{ flex: 1 }} />
       <PrimaryButton label="CHECK IT" onPress={submit} />
     </KeyboardAvoidingView>
