@@ -214,6 +214,10 @@
       return;
     }
     if (url.protocol !== "http:" && url.protocol !== "https:") return;
+    if (url.hash === "#wary-test") {
+      showBanner(["This is only a test \u2014 Wary is protecting you in Safari. Real scam websites get this same warning."]);
+      return;
+    }
     const reasons = reasonsFor(url);
     if (reasons.length) showBanner(reasons);
   }

@@ -112,7 +112,7 @@ export default function Setup() {
               ]}
             />
             <Text style={s.small}>
-              Then tap “Test it” below — Wary will notice it’s working and tick this off by itself.
+              Then tap “Test it in Safari” — you should see Wary’s red test warning, and this step ticks itself off.
             </Text>
           </>
         )}
@@ -149,7 +149,7 @@ export default function Setup() {
         ) : (
           <>
             <PrimaryButton label="OPEN SETTINGS" onPress={() => Linking.openSettings()} />
-            <Pressable onPress={() => Linking.openURL('https://www.apple.com')} style={s.secondary}>
+            <Pressable onPress={() => Linking.openURL('https://example.com/#wary-test')} style={s.secondary}>
               <Text style={s.secondaryText}>Test it in Safari</Text>
             </Pressable>
           </>

@@ -104,6 +104,12 @@ function run() {
     return;
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+  // Self-test: any page with #wary-test shows the banner, so users (and the setup
+  // screen's "Test it" button) can confirm the extension is really on.
+  if (url.hash === '#wary-test') {
+    showBanner(['This is only a test — Wary is protecting you in Safari. Real scam websites get this same warning.']);
+    return;
+  }
   const reasons = reasonsFor(url);
   if (reasons.length) showBanner(reasons);
 }
