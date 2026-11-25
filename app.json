@@ -19,12 +19,19 @@
             "NSPrivacyAccessedAPITypeReasons": [
               "C617.1"
             ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
           }
         ]
       },
       "appleTeamId": "WH3N6PVX8Y",
       "entitlements": {
         "com.apple.security.application-groups": [
+          "group.com.brendanmccormack.lens",
           "group.com.brendanmccormack.lens"
         ]
       }
@@ -38,6 +45,8 @@
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
@@ -62,7 +71,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Wary uses the camera to look at things you want checked \u2014 like a pop-up, a letter or a QR code \u2014 only while the scanner is open.",
+          "cameraPermission": "Wary uses the camera to look at things you want checked — like a pop-up, a letter or a QR code — only while the scanner is open.",
           "recordAudioAndroid": false
         }
       ],
@@ -125,6 +134,12 @@
       },
       "appleApplicationGroup": "group.com.brendanmccormack.lens"
     },
-    "owner": "brendanbjhvh"
+    "owner": "brendanbjhvh",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/631297ec-9d5f-4839-90ae-412875861b3c"
+    }
   }
 }
